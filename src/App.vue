@@ -1,20 +1,17 @@
 <!-- JAVASCRIPT & VUE.JS -->
 <script>
-import AppHeader from './components/AppHeader.vue';
+import AppMain from './components/AppMain.vue';
 
 export default {
     components: {
-        AppHeader,
-    },
+        AppMain,
+    }
 }
 </script>
 
 <!-- TEMPLATE HTML -->
 <template lang="">
-    <AppHeader/>
-    <main>
-        <router-view></router-view>
-    </main>
+    <AppMain/>
 </template>
 
 <!-- STYLE SCSS -->
