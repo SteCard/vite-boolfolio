@@ -6,11 +6,27 @@ export default {
     },
     data() {
         return {
+            baseUrl: 'http://localhost:8000/api',
+            loading: true,
+            projects: [],
         }
     },
     created() {
+        this.getProjects();
     },
     methods: {
+        getProjects() {
+
+            this.loading = true;
+            
+            axios.get(`${this.baseUrl}/projects`).then((response) => {
+
+                if (response.data.success) {
+                    this.projects = response.data.results;
+                    this.loading = false;
+                }
+            })
+        },
     },
 }
 </script>
