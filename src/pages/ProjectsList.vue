@@ -1,40 +1,77 @@
 <!-- JAVASCRIPT & VUE.JS -->
 <script>
+import { store } from '../store';
+
 import axios from 'axios';
+
 import AppLoader from '../components/AppLoader.vue';
 
 export default {
-
     components: {
         AppLoader,
     },
     data() {
         return {
-            baseUrl: 'http://localhost:8000',
-            loading: true,
+            store,
+
             projects: [],
+
+            currentPage: 1,
+            lastPage: null,
         }
     },
     created() {
-        this.getProjects();
+        /*
+            VERSIONE 1 - SENZA PAGINAZIONE
+
+            this.getProjects();
+        */
+
+        this.getProjects(1);
     },
-
     methods: {
-        getProjects() {
+        /*
+            VERSIONE 1 - SENZA PAGINAZIONE
+            
+            getProjects() {
+    
+                this.loading = true;
+    
+                axios.get(`${this.baseUrl}/api/projects`).then((response) => {
+    
+                    if (response.data.success) {
+    
+                        this.projects = response.data.results;
+    
+                        this.loading = false;
+                    }
+                })
+            },
+        */
+        getProjects(num_page) {
 
-            this.loading = true;
+            this.store.loading = true;
 
-            axios.get(`${this.baseUrl}/api/projects`).then((response) => {
+            axios.get(`${this.store.baseUrl}/api/projects`, { params: { page: num_page } }).then((response) => {
+
                 if (response.data.success) {
 
-                    this.projects = response.data.results;
+                    this.projects = response.data.results.data;
 
-                    // console.log(response.data.results)
+                    this.currentPage = response.data.results.current_page;
+                    this.lastPage = response.data.results.last_page;
 
-                    this.loading = false;
+                    this.store.loading = false;
                 }
             })
         },
+        truncateText(text) {
+            if (text.length > 100) {
+                return text.substr(0, 100) + '...';
+            }
+
+            return text;
+        }
     },
 }
 </script>
@@ -43,23 +80,53 @@ export default {
 <template lang="">
     <div class="container pb-5">
         <div class="row justify-content-center">
+            <!-- PROJECTS TITLE -->
             <div class="col-12 py-5">
                 <h1 class="text-center">Progetti</h1>
             </div>
-            <div class="col-12 d-flex justify-content-center align-items-center py-5" v-if="loading">
+            <!-- APP LOADER -->
+            <div class="col-12 d-flex justify-content-center align-items-center py-5" v-if="store.loading">
                 <AppLoader/>
             </div>
-            <div class="col-4 my-4"  v-for="project in projects" :key="project.id">
-                <div class="card h-100">
-                    <img class="card-img-top img-fluid" :src="`${baseUrl}/storage/${project.cover_image}`" :alt="`${project.title}-image`" v-if="project.cover_image">
-                    <div class="card-body h-50">
-                        <h5 class="card-title py-2" v-text="project.title"></h5>
-                        <p class="card-text py-2" v-text="project.description"></p>
+            <!-- PROJECTS INFO CARD -->
+            <div class="col-4 my-4" v-else v-for="project in projects" :key="project.id">
+                <div class="card projects-card h-100">
+                    <!-- PROJECTS COVER IMAGE -->
+                    <img class="card-img-top img-fluid" :src="`${store.baseUrl}/storage/${project.cover_image}`" :alt="`${project.title}-image`" v-if="project.cover_image">                    <div class="card-body h-50">
+                        <!-- PROJECTS TITLE -->
+                        <h5 class="card-title" v-text="project.title"></h5>
+                        <!-- PROJECTS DESCRIPTION -->
+                        <p class="card-text" v-text="truncateText(project.description)"></p>
+                        <!-- PROJECTS TYPE -->
+                        <div class="py-4" v-if="project.type">
+                            <label class="fw-bold mx-1">Tipologia:</label>
+                            <span v-text="project.type.name"></span>
+                        </div>
+                        <!-- PROJECTS TECHNOLOGIES -->
+                        <div class="py-2" v-if="project.technologies">
+                            <label class="fw-bold mx-1">Tecnologie:</label>
+                            <ul>
+                                <li v-for="technology in project.technologies" v-text="technology.name" class="my-2"></li>
+                            </ul>
+                        </div>
                     </div>
                     <div class="card-footer text-center">
                         <a href="#" class="btn btn-primary">Visualizza Progetto</a>
                     </div>
                 </div>
+            </div>
+            <!-- PULSANTI GESTIONE PAGINAZIONE -->
+            <div class="col-12 my-5" v-if="!store.loading">
+                <nav class="d-flex justify-content-center">
+                    <ul class="pagination">
+                        <li :class="currentPage === 1 ? 'disabled' : ''">
+                            <button class="page-link" @click="getProjects(currentPage - 1)">Precedente</button>
+                        </li>
+                        <li :class="currentPage === lastPage ? 'disabled' : ''">
+                            <button class="page-link" @click="getProjects(currentPage + 1)">Successivo</button>
+                        </li>
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
