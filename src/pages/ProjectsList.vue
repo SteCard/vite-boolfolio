@@ -1,7 +1,7 @@
 <!-- JAVASCRIPT & VUE.JS -->
 <script>
 import axios from 'axios';
-import AppLoader from './AppLoader.vue';
+import AppLoader from '../components/AppLoader.vue';
 
 export default {
 
@@ -46,9 +46,9 @@ export default {
             <div class="col-12 py-5">
                 <h1 class="text-center">Progetti</h1>
             </div>
-            <!-- <div class="col-12 d-flex justify-content-center align-items-center py-5" v-if="loading">
+            <div class="col-12 d-flex justify-content-center align-items-center py-5" v-if="loading">
                 <AppLoader/>
-            </div> -->
+            </div>
             <div class="col-4 my-4"  v-for="project in projects" :key="project.id">
                 <div class="card h-100">
                     <img class="card-img-top img-fluid" :src="`${baseUrl}/storage/${project.cover_image}`" :alt="`${project.title}-image`" v-if="project.cover_image">
