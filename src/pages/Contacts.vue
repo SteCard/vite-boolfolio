@@ -8,9 +8,9 @@ export default {
 <template lang="">
     <div class="container pb-5">
         <div class="row justify-content-center">
-            <!-- HOME PAGE TITLE -->
+            <!-- ABOUT US TITLE -->
             <div class="col-12 py-5">
-                <h1 class="text-center">Homepage</h1>
+                <h1 class="text-center">About Us</h1>
             </div>
         </div>
     </div>

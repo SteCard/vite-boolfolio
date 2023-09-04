@@ -44,7 +44,7 @@ export default {
     <div class="container pb-5">
         <div class="row justify-content-center">
             <div class="col-12 py-5">
-                <h1 class="text-center">vite-boolfolio</h1>
+                <h1 class="text-center">Progetti</h1>
             </div>
             <!-- <div class="col-12 d-flex justify-content-center align-items-center py-5" v-if="loading">
                 <AppLoader/>
